@@ -42,7 +42,8 @@ exports.config = {
     // Dependencies and current project directories to watch
     watched: [
       "web/static",
-      "test/static"
+      "test/static",
+      "web/elm"
     ],
 
     // Where to compile files to
@@ -51,6 +52,25 @@ exports.config = {
 
   // Configure your plugins
   plugins: {
+    elmBrunch: {
+      // Set to path where elm-package.json is located, defaults to project root (optional)
+      // if your elm files are not in /app then make sure to configure paths.watched in main brunch config
+      elmFolder: 'web/elm',
+
+      // Set to the elm file(s) containing your "main" function
+      // `elm make` handles all elm dependencies (required)
+      // relative to `elmFolder`
+      mainModules: ['App.elm'],
+
+      // Relative to `elmFolder`
+      outputFolder: '../static/vendor',
+
+      // If specified, all mainModules will be compiled to a single file (optional and merged with outputFolder)
+      // outputFile: 'elm.js',
+
+      // optional: add some parameters that are passed to elm-make
+      makeParameters : ['--warn']
+    },
     babel: {
       // Do not use ES6 compiler in vendor code
       ignore: [/web\/static\/vendor/]
