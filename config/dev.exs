@@ -36,8 +36,8 @@ config :phoenix, :stacktrace_depth, 20
 # Configure your database
 config :bananagrams, Bananagrams.Repo,
   adapter: Ecto.Adapters.Postgres,
-  username: "postgres",
-  password: "postgres",
+  username: "dan",
+  password: "",
   database: "bananagrams_dev",
   hostname: "localhost",
   pool_size: 10
