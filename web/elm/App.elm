@@ -64,14 +64,14 @@ type alias Player =
   {
     id : Int,
     name : String,
-    tiles : (List String),
+    tiles : List (Html Msg),
     board : List (List String)
   }
 
 type alias Model =
   {
-    players : (List Player),
-    tiles : (List String),
+    players : List Player,
+    tiles : List (Html Msg),
     winner : Maybe Player
   }
 
@@ -83,13 +83,14 @@ type alias Model =
 init : { playerNames : List String } -> (Model, Cmd Msg)
 init { playerNames } =
   let
-    tiles = List.concatMap repeatedLetterList (Dict.keys letterRatios)
-    shuffledTiles = shuffleTiles tiles
+    shuffledLetters = List.concatMap repeatedLetterList (Dict.keys letterRatios) |> shuffleTiles
+    shuffledTiles = List.map (\letter -> (div [class "tile"] [text letter])) shuffledLetters
     players = generatePlayers playerNames shuffledTiles
+
     numberOfTilesUsed = (List.length players) * tilesPerPlayer
     remainingTiles = List.take (numberOfTiles - numberOfTilesUsed) (List.reverse shuffledTiles)
   in
-    ({ players = players, tiles = remainingTiles, winner = Nothing }, Cmd.none)
+    (Model players remainingTiles Nothing, Cmd.none)
 
 shuffleTiles : List a -> List a
 shuffleTiles tiles =
@@ -113,16 +114,22 @@ repeatedLetterList letter =
   in
     String.split "" repeatedLetterString
 
-generatePlayers : List String -> List String -> List Player
+generatePlayers : List String -> List (Html Msg) -> List Player
 generatePlayers playerNames tiles =
   let
     n = List.length playerNames
     ids = Array.initialize n identity |> Array.toList |> List.map (\num -> (num + 1))
-    idsAndNames = List.map2 (,) ids playerNames
+    playerTiles = divyUpTiles ids tiles
   in
-    List.map (\(id, name) -> (
-      Player id name ((List.take (tilesPerPlayer * id) tiles) |> List.reverse |> List.take tilesPerPlayer) [[]]
-    )) idsAndNames
+    List.map3 (\id name tiles -> (
+      Player id name tiles [[]]
+    )) ids playerNames playerTiles
+
+divyUpTiles : List Int -> List a -> List (List a)
+divyUpTiles ids tiles =
+  List.map (\id ->
+    ((List.take (tilesPerPlayer * id) tiles) |> List.reverse |> List.take tilesPerPlayer)
+  ) ids
 
 -- UPDATE STATE
 update : Msg -> Model -> (Model, Cmd Msg)
@@ -154,7 +161,7 @@ view : Model -> Html Msg
 view model =
   div [] [
     h1 [id "#title"] [text "Bananagrams Mothertrucker!"],
-    div [id "#tiles"] [text (String.join ", " model.tiles)],
+    div [id "#tiles"] model.tiles,
     div [id "#players"] (List.map playerUI model.players)
   ]
 
@@ -167,5 +174,5 @@ playerUI player =
     div [id playerId] [
       h1 [class "player-title"] [text player.name],
       div [class "player-board"] playerRows,
-      div [class "player-tiles"] [text (String.join ", " player.tiles)]
+      div [class "player-tiles"] player.tiles
     ]

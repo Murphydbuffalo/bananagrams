@@ -9224,11 +9224,7 @@ var _user$project$Main$playerUI = function (player) {
 					[
 						_elm_lang$html$Html_Attributes$class('player-tiles')
 					]),
-				_elm_lang$core$Native_List.fromArray(
-					[
-						_elm_lang$html$Html$text(
-						A2(_elm_lang$core$String$join, ', ', player.tiles))
-					]))
+				player.tiles)
 			]));
 };
 var _user$project$Main$view = function (model) {
@@ -9254,11 +9250,7 @@ var _user$project$Main$view = function (model) {
 					[
 						_elm_lang$html$Html_Attributes$id('#tiles')
 					]),
-				_elm_lang$core$Native_List.fromArray(
-					[
-						_elm_lang$html$Html$text(
-						A2(_elm_lang$core$String$join, ', ', model.tiles))
-					])),
+				model.tiles),
 				A2(
 				_elm_lang$html$Html$div,
 				_elm_lang$core$Native_List.fromArray(
@@ -9328,6 +9320,19 @@ var _user$project$Main$repeatedLetterList = function (letter) {
 	return A2(_elm_lang$core$String$split, '', repeatedLetterString);
 };
 var _user$project$Main$tilesPerPlayer = 21;
+var _user$project$Main$divyUpTiles = F2(
+	function (ids, tiles) {
+		return A2(
+			_elm_lang$core$List$map,
+			function (id) {
+				return A2(
+					_elm_lang$core$List$take,
+					_user$project$Main$tilesPerPlayer,
+					_elm_lang$core$List$reverse(
+						A2(_elm_lang$core$List$take, _user$project$Main$tilesPerPlayer * id, tiles)));
+			},
+			ids);
+	});
 var _user$project$Main$numberOfTiles = 144;
 var _user$project$Main$shuffleTiles = function (tiles) {
 	var randomListGenerator = A2(
@@ -9365,44 +9370,53 @@ var _user$project$Main$generatePlayers = F2(
 			},
 			_elm_lang$core$Array$toList(
 				A2(_elm_lang$core$Array$initialize, n, _elm_lang$core$Basics$identity)));
-		var idsAndNames = A3(
-			_elm_lang$core$List$map2,
-			F2(
-				function (v0, v1) {
-					return {ctor: '_Tuple2', _0: v0, _1: v1};
+		var playerTiles = A2(_user$project$Main$divyUpTiles, ids, tiles);
+		return A4(
+			_elm_lang$core$List$map3,
+			F3(
+				function (id, name, tiles) {
+					return A4(
+						_user$project$Main$Player,
+						id,
+						name,
+						tiles,
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$core$Native_List.fromArray(
+								[])
+							]));
 				}),
 			ids,
-			playerNames);
-		return A2(
-			_elm_lang$core$List$map,
-			function (_p2) {
-				var _p3 = _p2;
-				var _p4 = _p3._0;
-				return A4(
-					_user$project$Main$Player,
-					_p4,
-					_p3._1,
-					A2(
-						_elm_lang$core$List$take,
-						_user$project$Main$tilesPerPlayer,
-						_elm_lang$core$List$reverse(
-							A2(_elm_lang$core$List$take, _user$project$Main$tilesPerPlayer * _p4, tiles))),
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$core$Native_List.fromArray(
-							[])
-						]));
-			},
-			idsAndNames);
+			playerNames,
+			playerTiles);
 	});
-var _user$project$Main$init = function (_p5) {
-	var _p6 = _p5;
-	var tiles = A2(
-		_elm_lang$core$List$concatMap,
-		_user$project$Main$repeatedLetterList,
-		_elm_lang$core$Dict$keys(_user$project$Main$letterRatios));
-	var shuffledTiles = _user$project$Main$shuffleTiles(tiles);
-	var players = A2(_user$project$Main$generatePlayers, _p6.playerNames, shuffledTiles);
+var _user$project$Main$Model = F3(
+	function (a, b, c) {
+		return {players: a, tiles: b, winner: c};
+	});
+var _user$project$Main$init = function (_p2) {
+	var _p3 = _p2;
+	var shuffledLetters = _user$project$Main$shuffleTiles(
+		A2(
+			_elm_lang$core$List$concatMap,
+			_user$project$Main$repeatedLetterList,
+			_elm_lang$core$Dict$keys(_user$project$Main$letterRatios)));
+	var shuffledTiles = A2(
+		_elm_lang$core$List$map,
+		function (letter) {
+			return A2(
+				_elm_lang$html$Html$div,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Attributes$class('tile')
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html$text(letter)
+					]));
+		},
+		shuffledLetters);
+	var players = A2(_user$project$Main$generatePlayers, _p3.playerNames, shuffledTiles);
 	var numberOfTilesUsed = _elm_lang$core$List$length(players) * _user$project$Main$tilesPerPlayer;
 	var remainingTiles = A2(
 		_elm_lang$core$List$take,
@@ -9410,14 +9424,10 @@ var _user$project$Main$init = function (_p5) {
 		_elm_lang$core$List$reverse(shuffledTiles));
 	return {
 		ctor: '_Tuple2',
-		_0: {players: players, tiles: remainingTiles, winner: _elm_lang$core$Maybe$Nothing},
+		_0: A3(_user$project$Main$Model, players, remainingTiles, _elm_lang$core$Maybe$Nothing),
 		_1: _elm_lang$core$Platform_Cmd$none
 	};
 };
-var _user$project$Main$Model = F3(
-	function (a, b, c) {
-		return {players: a, tiles: b, winner: c};
-	});
 var _user$project$Main$GameOver = function (a) {
 	return {ctor: 'GameOver', _0: a};
 };
