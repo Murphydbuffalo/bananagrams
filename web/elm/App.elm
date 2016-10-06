@@ -2,7 +2,7 @@ import Html exposing (Html, h1, div, text, button, br)
 import Html.Attributes exposing (id, class, style)
 import Html.App exposing (programWithFlags)
 import String exposing (join, repeat, split)
-import WebSocket exposing (listen, send)
+-- import WebSocket exposing (listen, send)
 import Dict exposing (Dict, fromList, get, keys)
 import Random exposing (step, list, int)
 import Array exposing (initialize, toList)
@@ -65,7 +65,7 @@ type alias Player =
     id : Int,
     name : String,
     tiles : List (Html Msg),
-    board : List (List String)
+    board : Html Msg
   }
 
 type alias Model =
@@ -84,13 +84,25 @@ init : { playerNames : List String } -> (Model, Cmd Msg)
 init { playerNames } =
   let
     shuffledLetters = List.concatMap repeatedLetterList (Dict.keys letterRatios) |> shuffleTiles
-    shuffledTiles = List.map (\letter -> (div [class "tile", style tileStyles] [text letter])) shuffledLetters
+    shuffledTiles = List.map (\letter -> (tile letter)) shuffledLetters
     players = generatePlayers playerNames shuffledTiles
 
     numberOfTilesUsed = (List.length players) * tilesPerPlayer
     remainingTiles = List.take (numberOfTiles - numberOfTilesUsed) (List.reverse shuffledTiles)
   in
     (Model players remainingTiles Nothing, Cmd.none)
+
+tile : String -> Html Msg
+tile string =
+  div [class "tile", style tileStyles] [text string]
+
+newBoard : Html Msg
+newBoard =
+  let
+    tiles = List.repeat 9 (tile "")
+    rows = List.repeat 9 (div [class "row", style tileContainerStyles] tiles)
+  in
+    div [class "board"] rows
 
 shuffleTiles : List a -> List a
 shuffleTiles tiles =
@@ -122,7 +134,7 @@ generatePlayers playerNames tiles =
     playerTiles = divyUpTiles ids tiles
   in
     List.map3 (\id name tiles -> (
-      Player id name tiles [[]]
+      Player id name tiles newBoard
     )) ids playerNames playerTiles
 
 divyUpTiles : List Int -> List a -> List (List a)
@@ -149,12 +161,13 @@ update msg model =
 -- SUBSCRIPTIONS
 subscriptions : Model -> Sub Msg
 subscriptions model =
-  Sub.batch [
-    WebSocket.listen "ws://localhost:4000/socket/play_letter" PlayLetter,
-    WebSocket.listen "ws://localhost:4000/socket/take_letter" TakeLetter,
-    WebSocket.listen "ws://localhost:4000/socket/trade_letter" TradeLetter,
-    WebSocket.listen "ws://localhost:4000/socket/game_over" GameOver
-  ]
+  -- Sub.batch [
+  --   WebSocket.listen "ws://localhost:4000/socket/play_letter" PlayLetter,
+  --   WebSocket.listen "ws://localhost:4000/socket/take_letter" TakeLetter,
+  --   WebSocket.listen "ws://localhost:4000/socket/trade_letter" TradeLetter,
+  --   WebSocket.listen "ws://localhost:4000/socket/game_over" GameOver
+  -- ]
+  Sub.none
 
 -- VIEW
 view : Model -> Html Msg
@@ -170,15 +183,16 @@ playerUI : Player -> Html Msg
 playerUI player =
   let
     playerId = "player-" ++ toString(player.id)
-    playerRows = List.map (\row -> (div [class "row"] (List.map (\tile -> div [class "tile"] [text tile]) row))) player.board
   in
     div [id playerId] [
       h1 [class "player-title"] [text player.name],
       br [] [],
-      div [class "player-board"] playerRows,
+      player.board,
+      br [] [],
       div [class "player-tiles", style tileContainerStyles] player.tiles
     ]
 
+-- Extract these styles to a stylesheet at some point
 tileContainerStyles : List (String, String)
 tileContainerStyles =
   [
@@ -193,5 +207,8 @@ tileStyles =
   [
     ("height", "40px"),
     ("width", "40px"),
-    ("font-size", "16px")
+    ("font-size", "16px"),
+    ("border", "1px solid black"),
+    ("border-radius", "7px"),
+    ("cursor", "pointer")
   ]
