@@ -210,5 +210,8 @@ tileStyles =
     ("font-size", "16px"),
     ("border", "1px solid black"),
     ("border-radius", "7px"),
-    ("cursor", "pointer")
+    ("cursor", "pointer"),
+    ("text-align", "center"),
+    ("vertical-align", "center"),
+    ("line-height", "40px")
   ]

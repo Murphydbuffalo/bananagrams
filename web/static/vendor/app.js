@@ -8632,7 +8632,10 @@ var _user$project$Main$tileStyles = _elm_lang$core$Native_List.fromArray(
 		{ctor: '_Tuple2', _0: 'font-size', _1: '16px'},
 		{ctor: '_Tuple2', _0: 'border', _1: '1px solid black'},
 		{ctor: '_Tuple2', _0: 'border-radius', _1: '7px'},
-		{ctor: '_Tuple2', _0: 'cursor', _1: 'pointer'}
+		{ctor: '_Tuple2', _0: 'cursor', _1: 'pointer'},
+		{ctor: '_Tuple2', _0: 'text-align', _1: 'center'},
+		{ctor: '_Tuple2', _0: 'vertical-align', _1: 'center'},
+		{ctor: '_Tuple2', _0: 'line-height', _1: '40px'}
 	]);
 var _user$project$Main$tileContainerStyles = _elm_lang$core$Native_List.fromArray(
 	[
