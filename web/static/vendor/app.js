@@ -9383,9 +9383,10 @@ var _user$project$Main$generatePlayers = F2(
 					_p4,
 					_p3._1,
 					A2(
-						_elm_lang$core$List$drop,
+						_elm_lang$core$List$take,
 						_user$project$Main$tilesPerPlayer,
-						A2(_elm_lang$core$List$take, _user$project$Main$tilesPerPlayer * _p4, tiles)),
+						_elm_lang$core$List$reverse(
+							A2(_elm_lang$core$List$take, _user$project$Main$tilesPerPlayer * _p4, tiles))),
 					_elm_lang$core$Native_List.fromArray(
 						[
 							_elm_lang$core$Native_List.fromArray(
@@ -9402,8 +9403,11 @@ var _user$project$Main$init = function (_p5) {
 		_elm_lang$core$Dict$keys(_user$project$Main$letterRatios));
 	var shuffledTiles = _user$project$Main$shuffleTiles(tiles);
 	var players = A2(_user$project$Main$generatePlayers, _p6.playerNames, shuffledTiles);
-	var tilesUsed = _elm_lang$core$List$length(players) * _user$project$Main$tilesPerPlayer;
-	var remainingTiles = A2(_elm_lang$core$List$drop, _user$project$Main$numberOfTiles - tilesUsed, shuffledTiles);
+	var numberOfTilesUsed = _elm_lang$core$List$length(players) * _user$project$Main$tilesPerPlayer;
+	var remainingTiles = A2(
+		_elm_lang$core$List$take,
+		_user$project$Main$numberOfTiles - numberOfTilesUsed,
+		_elm_lang$core$List$reverse(shuffledTiles));
 	return {
 		ctor: '_Tuple2',
 		_0: {players: players, tiles: remainingTiles, winner: _elm_lang$core$Maybe$Nothing},

@@ -86,8 +86,8 @@ init { playerNames } =
     tiles = List.concatMap repeatedLetterList (Dict.keys letterRatios)
     shuffledTiles = shuffleTiles tiles
     players = generatePlayers playerNames shuffledTiles
-    tilesUsed = (List.length players) * tilesPerPlayer
-    remainingTiles = List.drop (numberOfTiles - tilesUsed) shuffledTiles
+    numberOfTilesUsed = (List.length players) * tilesPerPlayer
+    remainingTiles = List.take (numberOfTiles - numberOfTilesUsed) (List.reverse shuffledTiles)
   in
     ({ players = players, tiles = remainingTiles, winner = Nothing }, Cmd.none)
 
@@ -121,7 +121,7 @@ generatePlayers playerNames tiles =
     idsAndNames = List.map2 (,) ids playerNames
   in
     List.map (\(id, name) -> (
-      Player id name ((List.take (tilesPerPlayer * id) tiles) |> (List.drop tilesPerPlayer)) [[]]
+      Player id name ((List.take (tilesPerPlayer * id) tiles) |> List.reverse |> List.take tilesPerPlayer) [[]]
     )) idsAndNames
 
 -- UPDATE STATE
