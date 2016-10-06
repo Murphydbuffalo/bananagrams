@@ -1,5 +1,5 @@
 import Html exposing (Html, h1, div, text, button)
-import Html.Attributes exposing (id, class)
+import Html.Attributes exposing (id, class, style)
 import Html.App exposing (programWithFlags)
 import String exposing (join, repeat, split)
 import WebSocket exposing (listen, send)
@@ -84,7 +84,7 @@ init : { playerNames : List String } -> (Model, Cmd Msg)
 init { playerNames } =
   let
     shuffledLetters = List.concatMap repeatedLetterList (Dict.keys letterRatios) |> shuffleTiles
-    shuffledTiles = List.map (\letter -> (div [class "tile"] [text letter])) shuffledLetters
+    shuffledTiles = List.map (\letter -> (div [class "tile", style tileStyles] [text letter])) shuffledLetters
     players = generatePlayers playerNames shuffledTiles
 
     numberOfTilesUsed = (List.length players) * tilesPerPlayer
@@ -161,7 +161,7 @@ view : Model -> Html Msg
 view model =
   div [] [
     h1 [id "#title"] [text "Bananagrams Mothertrucker!"],
-    div [id "#tiles"] model.tiles,
+    div [id "#tiles", style tileContainerStyles] model.tiles,
     div [id "#players"] (List.map playerUI model.players)
   ]
 
@@ -174,5 +174,21 @@ playerUI player =
     div [id playerId] [
       h1 [class "player-title"] [text player.name],
       div [class "player-board"] playerRows,
-      div [class "player-tiles"] player.tiles
+      div [class "player-tiles", style tileContainerStyles] player.tiles
     ]
+
+tileContainerStyles : List (String, String)
+tileContainerStyles =
+  [
+    ("display", "flex"),
+    ("flex-direction", "row"),
+    ("flex-wrap", "wrap"),
+    ("justify-content", "flex-start")
+  ]
+
+tileStyles : List (String, String)
+tileStyles =
+  [
+    ("height", "25px"),
+    ("width", "25px")
+  ]

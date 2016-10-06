@@ -9162,6 +9162,18 @@ var _elm_lang$websocket$WebSocket$onSelfMsg = F3(
 	});
 _elm_lang$core$Native_Platform.effectManagers['WebSocket'] = {pkg: 'elm-lang/websocket', init: _elm_lang$websocket$WebSocket$init, onEffects: _elm_lang$websocket$WebSocket$onEffects, onSelfMsg: _elm_lang$websocket$WebSocket$onSelfMsg, tag: 'fx', cmdMap: _elm_lang$websocket$WebSocket$cmdMap, subMap: _elm_lang$websocket$WebSocket$subMap};
 
+var _user$project$Main$tileStyles = _elm_lang$core$Native_List.fromArray(
+	[
+		{ctor: '_Tuple2', _0: 'height', _1: '25px'},
+		{ctor: '_Tuple2', _0: 'width', _1: '25px'}
+	]);
+var _user$project$Main$tileContainerStyles = _elm_lang$core$Native_List.fromArray(
+	[
+		{ctor: '_Tuple2', _0: 'display', _1: 'flex'},
+		{ctor: '_Tuple2', _0: 'flex-direction', _1: 'row'},
+		{ctor: '_Tuple2', _0: 'flex-wrap', _1: 'wrap'},
+		{ctor: '_Tuple2', _0: 'justify-content', _1: 'flex-start'}
+	]);
 var _user$project$Main$playerUI = function (player) {
 	var playerRows = A2(
 		_elm_lang$core$List$map,
@@ -9222,7 +9234,8 @@ var _user$project$Main$playerUI = function (player) {
 				_elm_lang$html$Html$div,
 				_elm_lang$core$Native_List.fromArray(
 					[
-						_elm_lang$html$Html_Attributes$class('player-tiles')
+						_elm_lang$html$Html_Attributes$class('player-tiles'),
+						_elm_lang$html$Html_Attributes$style(_user$project$Main$tileContainerStyles)
 					]),
 				player.tiles)
 			]));
@@ -9248,7 +9261,8 @@ var _user$project$Main$view = function (model) {
 				_elm_lang$html$Html$div,
 				_elm_lang$core$Native_List.fromArray(
 					[
-						_elm_lang$html$Html_Attributes$id('#tiles')
+						_elm_lang$html$Html_Attributes$id('#tiles'),
+						_elm_lang$html$Html_Attributes$style(_user$project$Main$tileContainerStyles)
 					]),
 				model.tiles),
 				A2(
@@ -9408,7 +9422,8 @@ var _user$project$Main$init = function (_p2) {
 				_elm_lang$html$Html$div,
 				_elm_lang$core$Native_List.fromArray(
 					[
-						_elm_lang$html$Html_Attributes$class('tile')
+						_elm_lang$html$Html_Attributes$class('tile'),
+						_elm_lang$html$Html_Attributes$style(_user$project$Main$tileStyles)
 					]),
 				_elm_lang$core$Native_List.fromArray(
 					[
