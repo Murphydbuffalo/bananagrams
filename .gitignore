@@ -25,3 +25,4 @@ erl_crash.dump
 
 # Ignore Elm build artifacts
 /web/elm/elm-stuff
+/elm-stuff
