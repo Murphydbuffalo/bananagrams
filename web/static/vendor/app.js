@@ -9164,8 +9164,9 @@ _elm_lang$core$Native_Platform.effectManagers['WebSocket'] = {pkg: 'elm-lang/web
 
 var _user$project$Main$tileStyles = _elm_lang$core$Native_List.fromArray(
 	[
-		{ctor: '_Tuple2', _0: 'height', _1: '25px'},
-		{ctor: '_Tuple2', _0: 'width', _1: '25px'}
+		{ctor: '_Tuple2', _0: 'height', _1: '40px'},
+		{ctor: '_Tuple2', _0: 'width', _1: '40px'},
+		{ctor: '_Tuple2', _0: 'font-size', _1: '16px'}
 	]);
 var _user$project$Main$tileContainerStyles = _elm_lang$core$Native_List.fromArray(
 	[
@@ -9224,6 +9225,12 @@ var _user$project$Main$playerUI = function (player) {
 						_elm_lang$html$Html$text(player.name)
 					])),
 				A2(
+				_elm_lang$html$Html$br,
+				_elm_lang$core$Native_List.fromArray(
+					[]),
+				_elm_lang$core$Native_List.fromArray(
+					[])),
+				A2(
 				_elm_lang$html$Html$div,
 				_elm_lang$core$Native_List.fromArray(
 					[
@@ -9257,6 +9264,12 @@ var _user$project$Main$view = function (model) {
 					[
 						_elm_lang$html$Html$text('Bananagrams Mothertrucker!')
 					])),
+				A2(
+				_elm_lang$html$Html$br,
+				_elm_lang$core$Native_List.fromArray(
+					[]),
+				_elm_lang$core$Native_List.fromArray(
+					[])),
 				A2(
 				_elm_lang$html$Html$div,
 				_elm_lang$core$Native_List.fromArray(

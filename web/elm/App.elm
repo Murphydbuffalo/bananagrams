@@ -1,4 +1,4 @@
-import Html exposing (Html, h1, div, text, button)
+import Html exposing (Html, h1, div, text, button, br)
 import Html.Attributes exposing (id, class, style)
 import Html.App exposing (programWithFlags)
 import String exposing (join, repeat, split)
@@ -161,6 +161,7 @@ view : Model -> Html Msg
 view model =
   div [] [
     h1 [id "#title"] [text "Bananagrams Mothertrucker!"],
+    br [] [],
     div [id "#tiles", style tileContainerStyles] model.tiles,
     div [id "#players"] (List.map playerUI model.players)
   ]
@@ -173,6 +174,7 @@ playerUI player =
   in
     div [id playerId] [
       h1 [class "player-title"] [text player.name],
+      br [] [],
       div [class "player-board"] playerRows,
       div [class "player-tiles", style tileContainerStyles] player.tiles
     ]
@@ -189,6 +191,7 @@ tileContainerStyles =
 tileStyles : List (String, String)
 tileStyles =
   [
-    ("height", "25px"),
-    ("width", "25px")
+    ("height", "40px"),
+    ("width", "40px"),
+    ("font-size", "16px")
   ]
