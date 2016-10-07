@@ -189,29 +189,32 @@ playerUI player =
       br [] [],
       player.board,
       br [] [],
-      div [class "player-tiles", style tileContainerStyles] player.tiles
+      div [class "player-tiles", style flexContainerStyles] player.tiles
     ]
 
+(=>) : a -> b -> (a, b)
+(=>) = (,)
+
 -- Extract these styles to a stylesheet at some point
-tileContainerStyles : List (String, String)
-tileContainerStyles =
+flexContainerStyles : List (String, String)
+flexContainerStyles =
   [
-    ("display", "flex"),
-    ("flex-direction", "row"),
-    ("flex-wrap", "wrap"),
-    ("justify-content", "flex-start")
+    ("display" => "flex"),
+    ("flex-direction" => "row"),
+    ("flex-wrap" => "wrap"),
+    ("justify-content" => "flex-start")
   ]
 
-tileStyles : List (String, String)
-tileStyles =
+squareStyles : List (String, String)
+squareStyles =
   [
-    ("height", "40px"),
-    ("width", "40px"),
-    ("font-size", "16px"),
-    ("border", "1px solid black"),
-    ("border-radius", "7px"),
-    ("cursor", "pointer"),
-    ("text-align", "center"),
-    ("vertical-align", "center"),
-    ("line-height", "40px")
+    ("height" => "40px"),
+    ("width" => "40px"),
+    ("font-size" => "16px"),
+    ("border" => "1px solid black"),
+    ("border-radius" => "7px"),
+    ("cursor" => "pointer"),
+    ("text-align" => "center"),
+    ("vertical-align" => "center"),
+    ("line-height" => "40px")
   ]
