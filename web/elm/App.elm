@@ -79,14 +79,10 @@ type alias Model =
   }
 
 -- INITIALIZE STATE
--- Hardcode the number of players for now (on the server).
--- Once you've implemented the lobby/start screen you can have that be its own Elm module
--- And one of its jobs will be to tell the server to add a player. That dynamic list
--- of players can then be passed as a flag to this module.
 init : { playerNames : List String } -> (Model, Cmd Msg)
 init { playerNames } =
   let
-    shuffledLetters = List.concatMap repeatedLetterList (Dict.keys letterRatios) |> shuffleTiles
+    shuffledLetters = List.concatMap repeatedLetterList (Dict.keys letterRatios) |> shuffle
     shuffledTiles = List.map (\letter -> (tile letter)) shuffledLetters
     players = generatePlayers playerNames shuffledTiles
 
@@ -95,24 +91,31 @@ init { playerNames } =
   in
     (Model players remainingTiles Nothing, Cmd.none)
 
-tile : String -> Html Msg
+tile : String -> Tile
 tile string =
-  div [class "tile", style tileStyles] [text string]
+  let
+    tileStyles = ("background-color" => "#FFCD9D") :: squareStyles
+  in
+    div [class "tile", style tileStyles] [text string]
 
-newBoard : Html Msg
+newSquare : Square
+newSquare =
+  div [class "square", style squareStyles] []
+
+newBoard : Board
 newBoard =
   let
-    tiles = List.repeat 9 (tile "")
-    rows = List.repeat 9 (div [class "row", style tileContainerStyles] tiles)
+    squares = List.repeat 9 newSquare
+    rows = List.repeat 9 (div [class "row", style flexContainerStyles] squares)
   in
     div [class "board"] rows
 
-shuffleTiles : List a -> List a
-shuffleTiles tiles =
+shuffle : List String -> List String
+shuffle letters =
   let
     randomListGenerator = Random.list numberOfTiles (Random.int 1 numberOfTiles)
     indexes = Random.step randomListGenerator (Random.initialSeed 432750601478) |> fst
-    indexedList = List.map2 (,) indexes tiles
+    indexedList = List.map2 (,) indexes letters
   in
     indexedList |> List.sortBy fst |> List.unzip |> snd
 
@@ -150,26 +153,29 @@ divyUpTiles ids tiles =
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
   case msg of
-    PlayLetter letter ->
+    MoveTile actingPlayer tile updatedBoard ->
+      let
+        player = List.filter (\p -> (actingPlayer.id == p.id)) model.players |> List.head
+        updatedTiles = List.filter (\t -> (not (t == tile))) actingPlayer.tiles
+        updatedPlayer = { actingPlayer | board = updatedBoard, tiles = updatedTiles }
+        updatedPlayers = List.map (\p -> (
+          if p.id == updatedPlayer.id then
+            updatedPlayer
+          else
+            p
+        )) model.players
+      in
+        ({ model | players = updatedPlayers }, Cmd.none)
+    TakeTile tile player ->
       (model, Cmd.none)
-    TakeLetter letter ->
+    TradeTile tile player ->
       (model, Cmd.none)
-    TradeLetter letter ->
-      (model, Cmd.none)
-    GameOver winner ->
-      -- Must validate board: spellcheck, and more?
-      -- Must provide the ID and name of the winner
+    GameOver winningPlayer ->
       (model, Cmd.none)
 
 -- SUBSCRIPTIONS
 subscriptions : Model -> Sub Msg
 subscriptions model =
-  -- Sub.batch [
-  --   WebSocket.listen "ws://localhost:4000/socket/play_letter" PlayLetter,
-  --   WebSocket.listen "ws://localhost:4000/socket/take_letter" TakeLetter,
-  --   WebSocket.listen "ws://localhost:4000/socket/trade_letter" TradeLetter,
-  --   WebSocket.listen "ws://localhost:4000/socket/game_over" GameOver
-  -- ]
   Sub.none
 
 -- VIEW
@@ -178,7 +184,7 @@ view model =
   div [] [
     h1 [id "#title"] [text "Bananagrams Mothertrucker!"],
     br [] [],
-    div [id "#tiles", style tileContainerStyles] model.tiles,
+    div [id "#tiles", style flexContainerStyles] model.tiles,
     div [id "#players"] (List.map playerUI model.players)
   ]
 
