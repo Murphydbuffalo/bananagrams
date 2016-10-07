@@ -55,23 +55,26 @@ letterRatios =
 
 -- TYPE DEFINITIONS
 type Msg =
-  PlayLetter String |
-  TakeLetter String |
-  TradeLetter String |
-  GameOver String
+  MoveTile Player Tile Board |
+  TakeTile Player Tile |
+  TradeTile Player Tile |
+  GameOver Player
 
+type alias Tile = Html Msg
+type alias Square = Html Msg
+type alias Board = Html Msg
 type alias Player =
   {
     id : Int,
     name : String,
-    tiles : List (Html Msg),
-    board : Html Msg
+    tiles : List (Tile),
+    board : Board
   }
 
 type alias Model =
   {
     players : List Player,
-    tiles : List (Html Msg),
+    tiles : List (Tile),
     winner : Maybe Player
   }
 
@@ -126,7 +129,7 @@ repeatedLetterList letter =
   in
     String.split "" repeatedLetterString
 
-generatePlayers : List String -> List (Html Msg) -> List Player
+generatePlayers : List String -> List (Tile) -> List Player
 generatePlayers playerNames tiles =
   let
     n = List.length playerNames
@@ -137,7 +140,7 @@ generatePlayers playerNames tiles =
       Player id name tiles newBoard
     )) ids playerNames playerTiles
 
-divyUpTiles : List Int -> List a -> List (List a)
+divyUpTiles : List Int -> List Tile -> List (List Tile)
 divyUpTiles ids tiles =
   List.map (\id ->
     ((List.take (tilesPerPlayer * id) tiles) |> List.reverse |> List.take tilesPerPlayer)
